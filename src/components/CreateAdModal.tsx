@@ -15,6 +15,7 @@ interface Game {
 export function CreateAdModal() {
   const [games, setGames] = React.useState<Game[]>([]);
   const [weekDays, setWeekDays] = React.useState<string[]>([]);
+  const [useVoiceChannel, setUseVoiceChannel] = React.useState(false);
 
   React.useEffect(() => {
     fetch('http://localhost:3300/games')
@@ -213,7 +214,17 @@ export function CreateAdModal() {
           </div>
 
           <label className="mt-2 flex items-center gap-2 text-sm">
-            <Checkbox.Root className="w-6 h-6 p-1 rounded bg-zinc-900">
+            <Checkbox.Root
+              checked={useVoiceChannel}
+              onCheckedChange={(checked) => {
+                if (checked === true) {
+                  setUseVoiceChannel(true);
+                } else {
+                  setUseVoiceChannel(false);
+                }
+              }}
+              className="w-6 h-6 p-1 rounded bg-zinc-900"
+            >
               <Checkbox.Indicator>
                 <Check className="w-4 h-4 text-emerald-400" />
               </Checkbox.Indicator>

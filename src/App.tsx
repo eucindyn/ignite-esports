@@ -5,6 +5,7 @@ import { GameBanner } from './components/GameBanner';
 import { CreateAdBanner } from './components/CreateAdBanner';
 import Logo from './assets/logo-nlw.svg';
 import './styles/main.css';
+import { Input } from './components/Form/Input';
 
 interface Game {
   id: string;
@@ -62,72 +63,66 @@ function App() {
               Publique um anúncio
             </Dialog.Title>
 
-            <Dialog.Content>
-              <form>
+            <form className="mt-8">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="game" className="font-semibold">
+                  Qual o game?
+                </label>
+
+                <Input
+                  id="game"
+                  placeholder="Selecione o game que deseja jogar"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="name">Seu nome (ou nickname)</label>
+                <Input id="name" placeholder="Como te chamam dentro do game?" />
+              </div>
+
+              <div>
                 <div>
-                  <label htmlFor="game">Qual é o game?</label>
-                  <input
-                    id="game"
-                    placeholder="Selecione o game que deseja jogar"
+                  <label htmlFor="yearsPlaying">Joga há quantos anos?</label>
+                  <Input
+                    type="number"
+                    id="yearsPlaying"
+                    placeholder="Tudo bem ser ZERO"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="name">Seu nome (ou nickname)</label>
-                  <input
-                    id="name"
-                    placeholder="Como te chamam dentro do game?"
-                  />
+                  <label htmlFor="discord">Qual seu Discord?</label>
+                  <Input type="text" id="discord" placeholder="Usuário#0000" />
+                </div>
+              </div>
+
+              <div>
+                <div>
+                  <label htmlFor="weekDays">Quando costuma jogar?</label>
                 </div>
 
                 <div>
+                  <label htmlFor="hourStart">Qual horário do dia?</label>
                   <div>
-                    <label htmlFor="yearsPlaying">Joga há quantos anos?</label>
-                    <input
-                      type="number"
-                      id="yearsPlaying"
-                      placeholder="Tudo bem ser ZERO"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="discord">Qual seu Discord?</label>
-                    <input
-                      type="text"
-                      id="discord"
-                      placeholder="Usuário#0000"
-                    />
+                    <Input type="time" id="hourStart" placeholder="De" />
+                    <Input type="time" id="hourEnd" placeholder="Até" />
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  <div>
-                    <label htmlFor="weekDays">Quando costuma jogar?</label>
-                  </div>
+              <div>
+                <Input type="checkbox" />
+                Costumo me conectar ao chat de voz
+              </div>
 
-                  <div>
-                    <label htmlFor="hourStart">Qual horário do dia?</label>
-                    <div>
-                      <input type="time" id="hourStart" placeholder="De" />
-                      <input type="time" id="hourEnd" placeholder="Até" />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <input type="checkbox" />
-                  Costumo me conectar ao chat de voz
-                </div>
-
-                <footer>
-                  <button>Cancelar</button>
-                  <button type="submit">
-                    <GameController />
-                    Encontrar duo
-                  </button>
-                </footer>
-              </form>
-            </Dialog.Content>
+              <footer>
+                <button>Cancelar</button>
+                <button type="submit">
+                  <GameController />
+                  Encontrar duo
+                </button>
+              </footer>
+            </form>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

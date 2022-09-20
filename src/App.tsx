@@ -2,10 +2,10 @@ import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { GameBanner } from './components/GameBanner';
 import { CreateAdBanner } from './components/CreateAdBanner';
+import { CreateAdModal } from './components/CreateAdModal';
 
 import Logo from './assets/logo-nlw.svg';
 import './styles/main.css';
-import { CreateAdModal } from './components/CreateAdModal';
 
 interface Game {
   id: string;
@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   return (
-    <div className="max-w-[1344px] mx-auto flex flex-col items-center my-20">
+    <section className="max-w-[1344px] mx-auto flex flex-col items-center my-20">
       <img src={Logo} alt="" />
 
       <h1 className="text-6xl text-white font-black mt-20">
@@ -56,7 +56,7 @@ function App() {
         <CreateAdBanner />
         <CreateAdModal />
       </Dialog.Root>
-    </div>
+    </section>
   );
 }
 

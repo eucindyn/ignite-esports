@@ -63,7 +63,7 @@ function App() {
               Publique um anúncio
             </Dialog.Title>
 
-            <form className="mt-8">
+            <form className="mt-8 flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <label htmlFor="game" className="font-semibold">
                   Qual o game?
@@ -75,13 +75,13 @@ function App() {
                 />
               </div>
 
-              <div>
+              <div className="flex flex-col gap-2">
                 <label htmlFor="name">Seu nome (ou nickname)</label>
                 <Input id="name" placeholder="Como te chamam dentro do game?" />
               </div>
 
-              <div>
-                <div>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
                   <label htmlFor="yearsPlaying">Joga há quantos anos?</label>
                   <Input
                     type="number"
@@ -90,20 +90,65 @@ function App() {
                   />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                   <label htmlFor="discord">Qual seu Discord?</label>
                   <Input type="text" id="discord" placeholder="Usuário#0000" />
                 </div>
               </div>
 
-              <div>
-                <div>
+              <div className="flex gap-6">
+                <div className="flex flex-col gap-2">
                   <label htmlFor="weekDays">Quando costuma jogar?</label>
+
+                  <div className="grid grid-cols-4 gap-2">
+                    <button
+                      className="w-8 h-8 rounded bg-zinc-900"
+                      title="Domingo"
+                    >
+                      D
+                    </button>
+                    <button
+                      className="w-8 h-8 rounded bg-zinc-900"
+                      title="Segunda"
+                    >
+                      S
+                    </button>
+                    <button
+                      className="w-8 h-8 rounded bg-zinc-900"
+                      title="Terça"
+                    >
+                      T
+                    </button>
+                    <button
+                      className="w-8 h-8 rounded bg-zinc-900"
+                      title="Quarta"
+                    >
+                      Q
+                    </button>
+                    <button
+                      className="w-8 h-8 rounded bg-zinc-900"
+                      title="Quinta"
+                    >
+                      Q
+                    </button>
+                    <button
+                      className="w-8 h-8 rounded bg-zinc-900"
+                      title="Sexta"
+                    >
+                      S
+                    </button>
+                    <button
+                      className="w-8 h-8 rounded bg-zinc-900"
+                      title="Sábado"
+                    >
+                      S
+                    </button>
+                  </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2 flex-1">
                   <label htmlFor="hourStart">Qual horário do dia?</label>
-                  <div>
+                  <div className="grid grid-cols-2 gap-2">
                     <Input type="time" id="hourStart" placeholder="De" />
                     <Input type="time" id="hourEnd" placeholder="Até" />
                   </div>

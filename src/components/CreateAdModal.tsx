@@ -1,5 +1,4 @@
 import React, { FormEvent } from 'react';
-import axios from 'axios';
 import { CaretDown, CaretUp, Check, GameController } from 'phosphor-react';
 import * as Select from '@radix-ui/react-select';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -19,37 +18,18 @@ export function CreateAdModal() {
   const [useVoiceChannel, setUseVoiceChannel] = React.useState(false);
 
   React.useEffect(() => {
-    axios('http://localhost:3300/games').then((response) =>
-      setGames(response.data)
-    );
+    fetch('http://localhost:3300/games')
+    .then(response => response.json())
+    .then(data => {
+      setGames(data)
+    })
   }, []);
 
-  async function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
     const formData = new FormData(event.target as HTMLFormElement);
     const data = Object.fromEntries(formData);
-
-    if (!data.name) {
-      return;
-    }
-
-    try {
-      await axios.post(`http://localhost:3300/games/${data.game}/ads`, {
-        name: data.name,
-        yearsPlaying: Number(data.yearsPlaying),
-        discord: data.discord,
-        weekDays: weekDays.map(Number),
-        hourStart: data.hourStart,
-        hourEnd: data.hourEnd,
-        useVoiceChannel: useVoiceChannel,
-      });
-
-      alert('Anúncio criado com sucesso!');
-    } catch (err) {
-      console.log(err);
-      alert('Erro ao criar anúncio. Tente novamente mais tarde.');
-    }
   }
 
   return (

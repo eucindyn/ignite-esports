@@ -1,10 +1,27 @@
-import { Check, GameController } from 'phosphor-react';
+import React from 'react';
+import { CaretDown, CaretUp, Check, GameController } from 'phosphor-react';
+import * as Select from '@radix-ui/react-select';
 import * as Dialog from '@radix-ui/react-dialog';
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import * as Checkbox from '@radix-ui/react-checkbox';
 
 import { Input } from './Form/Input';
 
+interface Game {
+  id: string;
+  title: string;
+}
+
 export function CreateAdModal() {
+  const [games, setGames] = React.useState<Game[]>([]);
+  const [weekDays, setWeekDays] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    fetch('http://localhost:3300/games')
+      .then((response) => response.json())
+      .then((data) => setGames(data));
+  }, []);
+
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="bg-black/60 inset-0 fixed" />
@@ -20,7 +37,42 @@ export function CreateAdModal() {
               Qual o game?
             </label>
 
-            <Input id="game" placeholder="Selecione o game que deseja jogar" />
+            <Select.Root>
+              <Select.Trigger
+                defaultValue=""
+                aria-label="Game"
+                className="bg-zinc-900 inline-flex py-3 px-4 rounded text-sm  justify-between items-center"
+              >
+                <Select.Value placeholder="Selecione um game que deseja jogar" />
+                <Select.Icon>
+                  <CaretDown />
+                </Select.Icon>
+              </Select.Trigger>
+              <Select.Portal className="bg-zinc-900 py-3 px-4 rounded text-sm text-white cursor-pointer">
+                <Select.Content>
+                  <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-zinc-900 cursor-default">
+                    <CaretUp />
+                  </Select.ScrollUpButton>
+                  <Select.Viewport className="p-1">
+                    {games.map((game) => {
+                      return (
+                        <Select.Group key={game.id}>
+                          <Select.Item
+                            value={game.id}
+                            className="flex relative items-center hover:bg-violet-500 rounded h-6 p-2"
+                          >
+                            <Select.ItemText>{game.title}</Select.ItemText>
+                          </Select.Item>
+                        </Select.Group>
+                      );
+                    })}
+                  </Select.Viewport>
+                  <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-zinc-900 cursor-default">
+                    <CaretDown />
+                  </Select.ScrollDownButton>
+                </Select.Content>
+              </Select.Portal>
+            </Select.Root>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -48,29 +100,64 @@ export function CreateAdModal() {
             <div className="flex flex-col gap-2">
               <label htmlFor="weekDays">Quando costuma jogar?</label>
 
-              <div className="grid grid-cols-4 gap-2">
-                <button className="w-8 h-8 rounded bg-zinc-900" title="Domingo">
+              <ToggleGroup.Root
+                type="multiple"
+                className="grid grid-cols-4 gap-2"
+                value={weekDays}
+                onValueChange={setWeekDays}
+              >
+                <ToggleGroup.Item
+                  value="0"
+                  className={`w-8 h-8 rounded bg-zinc-900 ${
+                    weekDays.includes('0') ? 'bg-violet-500' : ''
+                  }`}
+                  title="Domingo"
+                >
                   D
-                </button>
-                <button className="w-8 h-8 rounded bg-zinc-900" title="Segunda">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="1"
+                  className="w-8 h-8 rounded bg-zinc-900"
+                  title="Segunda"
+                >
                   S
-                </button>
-                <button className="w-8 h-8 rounded bg-zinc-900" title="Terça">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="2"
+                  className="w-8 h-8 rounded bg-zinc-900"
+                  title="Terça"
+                >
                   T
-                </button>
-                <button className="w-8 h-8 rounded bg-zinc-900" title="Quarta">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="3"
+                  className="w-8 h-8 rounded bg-zinc-900"
+                  title="Quarta"
+                >
                   Q
-                </button>
-                <button className="w-8 h-8 rounded bg-zinc-900" title="Quinta">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="4"
+                  className="w-8 h-8 rounded bg-zinc-900"
+                  title="Quinta"
+                >
                   Q
-                </button>
-                <button className="w-8 h-8 rounded bg-zinc-900" title="Sexta">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="5"
+                  className="w-8 h-8 rounded bg-zinc-900"
+                  title="Sexta"
+                >
                   S
-                </button>
-                <button className="w-8 h-8 rounded bg-zinc-900" title="Sábado">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="6"
+                  className="w-8 h-8 rounded bg-zinc-900"
+                  title="Sábado"
+                >
                   S
-                </button>
-              </div>
+                </ToggleGroup.Item>
+              </ToggleGroup.Root>
             </div>
 
             <div className="flex flex-col gap-2 flex-1">
@@ -82,8 +169,8 @@ export function CreateAdModal() {
             </div>
           </div>
 
-          <div className="mt-2 flex gap-2 text-sm">
-            <Checkbox.Root className="w-6 h-6 rounded bg-zinc-900">
+          <div className="mt-2 flex items-center gap-2 text-sm">
+            <Checkbox.Root className="w-6 h-6 p-1 rounded bg-zinc-900">
               <Checkbox.Indicator>
                 <Check className="w-4 h-4 text-emerald-400" />
               </Checkbox.Indicator>

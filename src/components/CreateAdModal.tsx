@@ -70,8 +70,7 @@ export function CreateAdModal() {
             <label htmlFor="game" className="font-semibold">
               Qual o game?
             </label>
-            <select
-            
+            <select          
               id="game"
               name="game"
               className=" bg-zinc-900 py-3 px-3 rounded text-sm text-zinc-300 focus:outline-violet-500 outline-none"

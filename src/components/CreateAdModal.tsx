@@ -71,17 +71,23 @@ export function CreateAdModal() {
               Qual o game?
             </label>
             <select
+            
               id="game"
               name="game"
-              placeholder=""
-              className="bg-zinc-900 py-3 px-4 rounded text-sm placeholder:text-zinc-500"
+              className=" bg-zinc-900 py-3 px-3 rounded text-sm text-zinc-300 focus:outline-violet-500 outline-none"
               defaultValue={'default'}
             >
-            <option disabled value={'default'}>Selecione um game que deseja jogar</option>
+              <option disabled value={'default'}>
+                Selecione um game que deseja jogar
+              </option>
               {games &&
                 games.map((game) => {
                   return (
-                    <option key={game.id} value={game.id}>
+                    <option
+                      className="text-white"
+                      key={game.id}
+                      value={game.id}
+                    >
                       {game.title}
                     </option>
                   );
@@ -114,7 +120,7 @@ export function CreateAdModal() {
                 name="discord"
                 id="discord"
                 type="text"
-                placeholder="Usuario#0000"
+                placeholder="Ex: usuario#0000"
               />
             </div>
           </div>
@@ -195,20 +201,10 @@ export function CreateAdModal() {
               </ToggleGroup.Root>
             </div>
             <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="hourStart">Qual horário do dia?</label>
+              <label htmlFor="hour">Qual horário do dia?</label>
               <div className="grid grid-cols-2 gap-2">
-                <Input
-                  name="hourStart"
-                  id="hourStart"
-                  type="time"
-                  placeholder="De"
-                />
-                <Input
-                  name="hourEnd"
-                  id="hourEnd"
-                  type="time"
-                  placeholder="Até"
-                />
+                <Input name="hourStart" id="hour" type="time" placeholder="De" />
+                <Input name="hourEnd" id="hour" type="time" placeholder="Até"/>
               </div>
             </div>
           </div>
@@ -223,10 +219,10 @@ export function CreateAdModal() {
                   setUseVoiceChannel(false);
                 }
               }}
-              className="w-6 h-6 p-1 rounded bg-zinc-900"
+              className="w-5 h-5 rounded bg-zinc-900"
             >
               <Checkbox.Indicator>
-                <Check className="w-4 h-4 text-emerald-400" />
+                <Check className="w-5 h-5  text-emerald-400" />
               </Checkbox.Indicator>
             </Checkbox.Root>
             Costumo me conectar ao chat de voz

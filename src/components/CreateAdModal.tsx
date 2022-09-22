@@ -1,11 +1,13 @@
-import React, { FormEvent } from 'react';
-import { CaretDown, CaretUp, Check, GameController } from 'phosphor-react';
-import * as Select from '@radix-ui/react-select';
+import React from 'react';
+import { Check, GameController } from 'phosphor-react';
+
 import * as Dialog from '@radix-ui/react-dialog';
-import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import * as Checkbox from '@radix-ui/react-checkbox';
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
 
 import { Input } from './Form/Input';
+
+import axios from 'axios';
 
 interface Game {
   id: string;
@@ -18,18 +20,40 @@ export function CreateAdModal() {
   const [useVoiceChannel, setUseVoiceChannel] = React.useState(false);
 
   React.useEffect(() => {
-    fetch('http://localhost:3300/games')
-    .then(response => response.json())
-    .then(data => {
-      setGames(data)
-    })
+    axios('http://localhost:3300/games').then((response) => {
+      setGames(response.data);
+    });
   }, []);
 
-  function handleSubmit(event: FormEvent) {
+  async function handleCreateAd(event: React.FormEvent) {
     event.preventDefault();
 
     const formData = new FormData(event.target as HTMLFormElement);
     const data = Object.fromEntries(formData);
+
+    if (!data.name) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3300/games/${data.game}/ads`,
+        {
+          name: data.name,
+          yearsPlaying: Number(data.yearsPlaying),
+          discord: data.discord,
+          weekDays: weekDays.map(Number),
+          hourStart: data.hourStart,
+          hourEnd: data.hourEnd,
+          useVoiceChannel: useVoiceChannel,
+        }
+      );
+
+      alert('Anúncio criado com sucesso!');
+    } catch (err) {
+      console.log(err);
+      alert('Erro ao criar anúncio!');
+    }
   }
 
   return (
@@ -41,54 +65,32 @@ export function CreateAdModal() {
           Publique um anúncio
         </Dialog.Title>
 
-        <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+        <form onSubmit={handleCreateAd} className="mt-8 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="game" className="font-semibold">
               Qual o game?
             </label>
-
-            <Select.Root>
-              <Select.Trigger
-                name="game"
-                id="game"
-                defaultValue=""
-                aria-label="Game"
-                className="bg-zinc-900 inline-flex py-3 px-4 rounded text-sm  justify-between items-center"
-              >
-                <Select.Value placeholder="Selecione um game que deseja jogar" />
-                <Select.Icon>
-                  <CaretDown />
-                </Select.Icon>
-              </Select.Trigger>
-              <Select.Portal className="bg-zinc-900 py-3 px-4 rounded text-sm text-white cursor-pointer">
-                <Select.Content>
-                  <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-zinc-900 cursor-default">
-                    <CaretUp />
-                  </Select.ScrollUpButton>
-                  <Select.Viewport className="p-1">
-                    {games.map((game) => {
-                      return (
-                        <Select.Group key={game.id}>
-                          <Select.Item
-                            value={game.id}
-                            className="flex relative items-center hover:bg-violet-500 rounded h-6 p-2"
-                          >
-                            <Select.ItemText>{game.title}</Select.ItemText>
-                          </Select.Item>
-                        </Select.Group>
-                      );
-                    })}
-                  </Select.Viewport>
-                  <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-zinc-900 cursor-default">
-                    <CaretDown />
-                  </Select.ScrollDownButton>
-                </Select.Content>
-              </Select.Portal>
-            </Select.Root>
+            <select
+              id="game"
+              name="game"
+              placeholder=""
+              className="bg-zinc-900 py-3 px-4 rounded text-sm placeholder:text-zinc-500"
+              defaultValue={'default'}
+            >
+            <option disabled value={'default'}>Selecione um game que deseja jogar</option>
+              {games &&
+                games.map((game) => {
+                  return (
+                    <option key={game.id} value={game.id}>
+                      {game.title}
+                    </option>
+                  );
+                })}
+            </select>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="name">Seu nome (ou nickname)</label>
+            <label htmlFor="name">Seu nome ou nickname</label>
             <Input
               name="name"
               id="name"
@@ -98,22 +100,21 @@ export function CreateAdModal() {
 
           <div className="grid grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
-              <label htmlFor="yearsPlaying">Joga há quantos anos?</label>
+              <label htmlFor="yearsPlaying">Joga a quantos anos?</label>
               <Input
                 name="yearsPlaying"
-                type="number"
                 id="yearsPlaying"
+                type="number"
                 placeholder="Tudo bem ser ZERO"
               />
             </div>
-
             <div className="flex flex-col gap-2">
-              <label htmlFor="discord">Qual seu Discord?</label>
+              <label htmlFor="discord">Qual o seu Discord?</label>
               <Input
                 name="discord"
-                type="text"
                 id="discord"
-                placeholder="Usuário#0000"
+                type="text"
+                placeholder="Usuario#0000"
               />
             </div>
           </div>
@@ -132,81 +133,80 @@ export function CreateAdModal() {
                   value="0"
                   title="Domingo"
                   className={`w-8 h-8 rounded ${
-                    weekDays.includes('0') ? 'bg-violet-600' : ' bg-zinc-900'
+                    weekDays.includes('0') ? 'bg-violet-500' : 'bg-zinc-900'
                   }`}
                 >
                   D
                 </ToggleGroup.Item>
                 <ToggleGroup.Item
                   value="1"
-                  className={`w-8 h-8 rounded ${
-                    weekDays.includes('1') ? 'bg-violet-600' : ' bg-zinc-900'
-                  }`}
                   title="Segunda"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes('1') ? 'bg-violet-500' : 'bg-zinc-900'
+                  }`}
                 >
                   S
                 </ToggleGroup.Item>
                 <ToggleGroup.Item
                   value="2"
-                  className={`w-8 h-8 rounded ${
-                    weekDays.includes('2') ? 'bg-violet-600' : ' bg-zinc-900'
-                  }`}
                   title="Terça"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes('2') ? 'bg-violet-500' : 'bg-zinc-900'
+                  }`}
                 >
                   T
                 </ToggleGroup.Item>
                 <ToggleGroup.Item
                   value="3"
-                  className={`w-8 h-8 rounded ${
-                    weekDays.includes('3') ? 'bg-violet-600' : ' bg-zinc-900'
-                  }`}
                   title="Quarta"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes('3') ? 'bg-violet-500' : 'bg-zinc-900'
+                  }`}
                 >
                   Q
                 </ToggleGroup.Item>
                 <ToggleGroup.Item
                   value="4"
-                  className={`w-8 h-8 rounded ${
-                    weekDays.includes('4') ? 'bg-violet-600' : ' bg-zinc-900'
-                  }`}
                   title="Quinta"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes('4') ? 'bg-violet-500' : 'bg-zinc-900'
+                  }`}
                 >
                   Q
                 </ToggleGroup.Item>
                 <ToggleGroup.Item
                   value="5"
-                  className={`w-8 h-8 rounded ${
-                    weekDays.includes('5') ? 'bg-violet-600' : ' bg-zinc-900'
-                  }`}
                   title="Sexta"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes('5') ? 'bg-violet-500' : 'bg-zinc-900'
+                  }`}
                 >
                   S
                 </ToggleGroup.Item>
                 <ToggleGroup.Item
                   value="6"
-                  className={`w-8 h-8 rounded ${
-                    weekDays.includes('6') ? 'bg-violet-600' : ' bg-zinc-900'
-                  }`}
                   title="Sábado"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes('6') ? 'bg-violet-500' : 'bg-zinc-900'
+                  }`}
                 >
                   S
                 </ToggleGroup.Item>
               </ToggleGroup.Root>
             </div>
-
             <div className="flex flex-col gap-2 flex-1">
               <label htmlFor="hourStart">Qual horário do dia?</label>
               <div className="grid grid-cols-2 gap-2">
                 <Input
-                  type="time"
                   name="hourStart"
                   id="hourStart"
+                  type="time"
                   placeholder="De"
                 />
                 <Input
-                  type="time"
                   name="hourEnd"
                   id="hourEnd"
+                  type="time"
                   placeholder="Até"
                 />
               </div>
@@ -240,8 +240,8 @@ export function CreateAdModal() {
               Cancelar
             </Dialog.Close>
             <button
-              className="bg-violet-500 px-5 h-12 rounded-md font-semibold flex items-center gap-3 hover:bg-violet-600"
               type="submit"
+              className="bg-violet-500 px-5 h-12 rounded-md font-semibold flex items-center gap-3 hover:bg-violet-600"
             >
               <GameController className="w-6 h-6" />
               Encontrar duo
